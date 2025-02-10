@@ -1,5 +1,5 @@
 {
-  "name": "webpack_code",
+  "name": "webpack-code",
   "version": "1.0.0",
   "main": "./src/main.js",
   "scripts": {
