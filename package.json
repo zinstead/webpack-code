@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",
+    "bin-wrapper-china": "^0.1.0",
     "core-js": "^3.39.0"
   },
   "browserslist": [
@@ -51,5 +52,8 @@
     "> 1%",
     "not dead",
     "ie 11"
-  ]
+  ],
+  "resolutions": {
+    "bin-wrapper": "npm:bin-wrapper-china"
+  }
 }
