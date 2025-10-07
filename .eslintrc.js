@@ -1,20 +1,18 @@
+// module.exports = {
+//   parser: '@typescript-eslint/parser', // 使用 TypeScript 解析器
+//   plugins: ['react', 'react-hooks', '@typescript-eslint'],
+//   extends: [
+//     'eslint:recommended', // ESLint 官方推荐规则
+//     'plugin:react/recommended', // React 推荐规则
+//     'plugin:react-hooks/recommended', // React Hooks 推荐规则
+//     'plugin:@typescript-eslint/recommended', // TypeScript 推荐规则
+//   ],
+//   rules: {
+//     'react/react-in-jsx-scope': 'off', // 关闭 JSX 需要手动引入 React 的规则
+//     'react/prop-types': 'off', // TypeScript 已经有类型检查
+//   },
+// };
+
 module.exports = {
-  //继承eslint官方规则
-  extends: ["eslint:recommended"],
-  // 启用es6，node和浏览器的全局变量
-  env: {
-    es6: true,
-    node: true,
-    browser: true,
-  },
-  // 使用es6语法，es模块化规范
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: "module",
-  },
-  // 自定义语法规则
-  // rules: {
-  //     "no-var": 2,
-  // },
-  // plugins: ["import"]
+  extends: ["react-app"],
 };

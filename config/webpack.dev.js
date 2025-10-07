@@ -1,22 +1,16 @@
-const path = require('path');
-// const os = require('os');
-const ESLintPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-
-// const threads=os.cpus().length-1;
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const ForkTsCheckerWebpackPlugin = require("fork-ts-checker-webpack-plugin");
 
 module.exports = {
   // 入口用相对路径
-  entry: './src/main.js',
-  // 输出用绝对路径
-  // output: {
-  //     path: path.resolve(__dirname, "dist"),
-  //     // 入口文件的输出路径
-  //     filename: "static/js/main.js",
-  //     // 清除上一次打包的内容
-  //     clean: true,
-  // },
+  entry: path.resolve(__dirname, "../src/index.js"),
+  output: {
+    path: path.resolve(__dirname, "../dist"),
+    filename: "static/js/[name].js",
+    publicPath: "/",
+  },
   module: {
     rules: [
       {
@@ -24,51 +18,61 @@ module.exports = {
           {
             test: /\.css$/i,
             // 从右往左
-            use: ['style-loader', 'css-loader'],
+            use: [
+              "style-loader",
+              {
+                loader: "css-loader",
+                options: {
+                  modules: {
+                    auto: true,
+                  },
+                },
+              },
+            ],
           },
           {
             test: /\.less$/i,
-            use: ['style-loader', 'css-loader', 'less-loader'],
+            use: [
+              "style-loader",
+              {
+                loader: "css-loader",
+                options: {
+                  modules: {
+                    auto: true,
+                  },
+                },
+              },
+              ,
+              "less-loader",
+            ],
           },
           {
-            test: /\.(jpe?g|png|gif|webp)$/i,
-            type: 'asset',
-            parser: {
-              dataUrlCondition: {
-                maxSize: 4 * 1024, // 4kb
-              },
-            },
+            test: /\.(jpe?g|png|gif|webp|svg)$/i,
+            type: "asset",
             generator: {
-              filename: 'static/images/[hash:10][ext][query]',
+              filename: "static/images/[hash:10][ext][query]",
             },
           },
           {
             test: /\.(ttf|woff2?|mp3|mp4|avi)$/i,
-            type: 'asset/resource',
+            type: "asset/resource",
             generator: {
-              filename: 'static/media/[hash:10][ext][query]',
+              filename: "static/media/[hash:10][ext][query]",
             },
           },
           {
-            test: /\.js$/,
+            test: /\.(jsx?|tsx?)$/,
             exclude: /node_modules/,
             use: [
+              "thread-loader",
               {
-                loader: 'babel-loader',
+                loader: "babel-loader",
                 options: {
-                  // presets: ['@babel/preset-env'],
+                  plugins: ["react-refresh/babel"],
                   cacheDirectory: true,
                   cacheCompression: false,
-                  plugins: ['react-refresh/babel'],
                 },
               },
-              // {
-              //     // babel开启多进程打包
-              //     loader: "thread-loader",
-              //     options: {
-              //         workers: threads,
-              //     }
-              // }
             ],
           },
         ],
@@ -76,26 +80,35 @@ module.exports = {
     ],
   },
   plugins: [
-    new ESLintPlugin({
-      context: path.resolve(__dirname, '../src'),
-      exclude: 'node_modules',
-      cache: true,
-      // cacheLocation: path.resolve(__dirname,'../node_modules/.cache/eslintcache'),
-      // eslint开启多进程打包
-      // threads
-    }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../public/index.html'),
+      template: path.resolve(__dirname, "../public/index.html"),
+      favicon: path.resolve(__dirname, "../public/nothing.svg"),
     }),
     new ReactRefreshWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin({ async: false }),
   ],
   devServer: {
-    host: 'localhost',
     port: 3000,
     open: true,
-    // hot: true, // 默认值
-    historyApiFallback: true, // 解决前端路由刷新404问题
+    hot: true,
+    historyApiFallback: true, // history路由
+    proxy: [
+      {
+        context: "/api",
+        target: "http://httpbin.org/",
+        changeOrigin: true,
+      },
+    ],
   },
-  mode: 'development',
-  devtool: 'eval-source-map',
+  resolve: {
+    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    alias: {
+      "@": path.resolve(__dirname, "../src"), // 将 `@/` 映射到 `src` 目录
+    },
+  },
+  mode: "development",
+  devtool: "cheap-module-source-map",
+  cache: {
+    type: "filesystem",
+  },
 };

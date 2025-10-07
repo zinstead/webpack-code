@@ -1,24 +1,26 @@
-const path = require('path');
-const os = require('os');
-const ESLintPlugin = require('eslint-webpack-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
-const WorkboxPlugin = require('workbox-webpack-plugin');
-
-const threads = os.cpus().length - 1;
+const path = require("path");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserWebpackPlugin = require("terser-webpack-plugin");
 
 function getStyleLoader(preLoader) {
   return [
     MiniCssExtractPlugin.loader,
-    'css-loader',
     {
-      loader: 'postcss-loader',
+      loader: "css-loader",
+      options: {
+        modules: {
+          // 文件名包含.module，启用css-module
+          auto: true,
+        },
+      },
+    },
+    {
+      loader: "postcss-loader",
       options: {
         postcssOptions: {
-          plugins: [['postcss-preset-env']],
+          plugins: [["postcss-preset-env"]],
         },
       },
     },
@@ -28,16 +30,17 @@ function getStyleLoader(preLoader) {
 
 module.exports = {
   // 入口用相对路径
-  entry: './src/main.js',
+  entry: "./src/index.js",
   // 输出用绝对路径
   output: {
-    path: path.resolve(__dirname, '../dist'),
+    path: path.resolve(__dirname, "../dist"),
     // 入口文件的输出路径
-    filename: 'static/js/[name].[hash:10].js',
+    filename: "static/js/[name].[hash:10].js",
+    publicPath: "/",
     // 给打包输出的其他文件命名
-    // chunkFilename: "static/js/[name].[hash:10].chunk.js",
+    chunkFilename: "static/js/[name].[hash:10].chunk.js",
     // 图片，字体图标等使用type:asset处理的资源命名
-    assetModuleFilename: 'static/media/[hash:10][ext][query]',
+    assetModuleFilename: "static/media/[hash:10][ext][query]",
     // 清除上一次打包的内容
     clean: true,
   },
@@ -52,46 +55,28 @@ module.exports = {
           },
           {
             test: /\.less$/i,
-            use: getStyleLoader('less-loader'),
+            use: getStyleLoader("less-loader"),
           },
           {
             test: /\.(jpe?g|png|gif|svg)$/i,
-            type: 'asset',
-            parser: {
-              dataUrlCondition: {
-                maxSize: 10 * 1024, // 4kb
-              },
-            },
-            // generator: {
-            //     filename: 'static/images/[hash:10][ext][query]'
-            // },
+            type: "asset",
           },
           {
             test: /\.(ttf|woff2?|mp3|mp4|avi)$/i,
-            type: 'asset/resource',
-            // generator: {
-            //     filename: 'static/media/[hash:10][ext][query]'
-            // },
+            type: "asset/resource",
           },
           {
-            test: /\.js$/,
+            test: /\.(jsx?|tsx)$/,
             exclude: /node_modules/,
             use: [
+              "thread-loader",
               {
-                loader: 'babel-loader',
+                loader: "babel-loader",
                 options: {
-                  // presets: ['@babel/preset-env'],
                   // 将babel编译时的辅助代码提取到单独的文件
-                  plugins: ['@babel/plugin-transform-runtime'],
+                  plugins: ["@babel/plugin-transform-runtime"],
                   cacheDirectory: true,
                   cacheCompression: false,
-                },
-              },
-              {
-                // babel开启多线程打包
-                loader: 'thread-loader',
-                options: {
-                  workers: threads,
                 },
               },
             ],
@@ -101,79 +86,30 @@ module.exports = {
     ],
   },
   optimization: {
-    minimizer: [
-      new CssMinimizerPlugin(),
-      new TerserWebpackPlugin({
-        parallel: threads,
-      }),
-      new ImageMinimizerPlugin({
-        minimizer: {
-          implementation: ImageMinimizerPlugin.imageminMinify,
-          options: {
-            // Lossless optimization with custom option
-            // Feel free to experiment with options for better result for you
-            plugins: [
-              ['gifsicle', { interlaced: true }],
-              ['jpegtran', { progressive: true }],
-              ['optipng', { optimizationLevel: 5 }],
-              // Svgo configuration here https://github.com/svg/svgo#configuration
-              [
-                'svgo',
-                {
-                  plugins: [
-                    {
-                      name: 'preset-default',
-                      params: {
-                        overrides: {
-                          removeViewBox: false,
-                          addAttributesToSVGElement: {
-                            params: {
-                              attributes: [
-                                { xmlns: 'http://www.w3.org/2000/svg' },
-                              ],
-                            },
-                          },
-                        },
-                      },
-                    },
-                  ],
-                },
-              ],
-            ],
-          },
-        },
-      }),
-    ],
-    // splitChunks: {
-    //     chunks: 'all',
-    //     // 其他使用默认值
-    // },
+    minimizer: [new CssMinimizerPlugin(), new TerserWebpackPlugin()],
+    splitChunks: {
+      chunks: "all",
+    },
     runtimeChunk: {
-      name: entrypoint => `runtime~${entrypoint.name}`,
+      name: (entrypoint) => `runtime~${entrypoint.name}`,
     },
   },
   plugins: [
-    new ESLintPlugin({
-      context: path.resolve(__dirname, '../src'),
-      exclude: 'node_modules',
-      cache: true,
-      // eslint开启多线程打包
-      threads,
-    }),
     new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, '../public/index.html'),
+      template: path.resolve(__dirname, "../public/index.html"),
+      favicon: path.resolve(__dirname, "../public/nothing.svg"),
     }),
     new MiniCssExtractPlugin({
-      filename: 'static/css/[name].css',
-      // chunkFilename: 'static/css/[name].chunk.css',
-    }),
-    new WorkboxPlugin.GenerateSW({
-      // 这些选项帮助快速启用 ServiceWorkers
-      // 不允许遗留任何“旧的” ServiceWorkers
-      clientsClaim: true,
-      skipWaiting: true,
+      filename: "static/css/[name].css",
+      chunkFilename: "static/css/[name].chunk.css",
     }),
   ],
-  mode: 'production',
-  devtool: 'source-map',
+  resolve: {
+    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    alias: {
+      "@": path.resolve(__dirname, "../src"), // 将 `@/` 映射到 `src` 目录
+    },
+  },
+  mode: "production",
+  devtool: "source-map",
 };

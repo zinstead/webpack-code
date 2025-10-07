@@ -1,12 +1,19 @@
-module.exports={
-    // 智能预设：编译es6以上的代码
-    presets: [
-        [
-            '@babel/preset-env',
-            {
-                "useBuiltIns": "usage", // 按需引入polyfill
-                "corejs": "3",
-            },
-        ]
+module.exports = {
+  presets: [
+    [
+      "@babel/preset-env",
+      {
+        useBuiltIns: "usage",
+        // corejs兼容js版本，在package.json的browerslist中指定
+        corejs: 3,
+      },
     ],
-}
+    [
+      "@babel/preset-react",
+      {
+        runtime: "automatic",
+      },
+    ],
+    "@babel/preset-typescript",
+  ],
+};

@@ -1,11 +1,12 @@
 {
   "name": "webpack-code",
   "version": "1.0.0",
-  "main": "./src/main.js",
+  "main": "./src/index.js",
   "scripts": {
     "start": "yarn dev",
     "dev": "webpack serve --config ./config/webpack.dev.js",
-    "build": "webpack --config ./config/webpack.prod.js"
+    "build": "webpack --config ./config/webpack.prod.js",
+    "postinstall": "husky"
   },
   "keywords": [],
   "author": "",
@@ -15,19 +16,17 @@
     "@babel/core": "^7.26.0",
     "@babel/plugin-transform-runtime": "^7.25.9",
     "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.27.1",
+    "@babel/preset-typescript": "^7.27.1",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.15",
+    "@tsconfig/create-react-app": "^2.0.7",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "eslint": "^9.15.0",
-    "eslint-webpack-plugin": "^4.2.0",
+    "fork-ts-checker-webpack-plugin": "^9.1.0",
     "html-webpack-plugin": "^5.6.3",
-    "image-minimizer-webpack-plugin": "^4.1.1",
-    "imagemin": "^9.0.0",
-    "imagemin-gifsicle": "^7.0.0",
-    "imagemin-jpegtran": "^8.0.0",
-    "imagemin-optipng": "^8.0.0",
-    "imagemin-svgo": "^11.0.1",
+    "husky": "^9.1.7",
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
     "mini-css-extract-plugin": "^2.9.2",
@@ -37,10 +36,10 @@
     "react-refresh": "^0.14.2",
     "style-loader": "^4.0.0",
     "thread-loader": "^4.0.4",
+    "typescript": "^5.9.3",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
-    "webpack-dev-server": "^5.1.0",
-    "workbox-webpack-plugin": "^7.3.0"
+    "webpack-dev-server": "^5.1.0"
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",
@@ -50,10 +49,14 @@
   "browserslist": [
     "last 2 versions",
     "> 1%",
-    "not dead",
-    "ie 11"
+    "not dead"
   ],
   "resolutions": {
-    "bin-wrapper": "npm:bin-wrapper-china"
+    "bin-wrapper": "npm:bin-wrapper-china",
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
