@@ -44,7 +44,9 @@
   "dependencies": {
     "@babel/runtime": "^7.26.0",
     "bin-wrapper-china": "^0.1.0",
-    "core-js": "^3.39.0"
+    "core-js": "^3.39.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "browserslist": [
     "last 2 versions",

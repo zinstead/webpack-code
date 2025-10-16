@@ -42,7 +42,6 @@ module.exports = {
                   },
                 },
               },
-              ,
               "less-loader",
             ],
           },
@@ -82,26 +81,18 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../public/index.html"),
-      favicon: path.resolve(__dirname, "../public/nothing.svg"),
     }),
     new ReactRefreshWebpackPlugin(),
-    new ForkTsCheckerWebpackPlugin({ async: false }),
+    new ForkTsCheckerWebpackPlugin(),
   ],
   devServer: {
     port: 3000,
-    open: true,
     hot: true,
-    historyApiFallback: true, // history路由
-    proxy: [
-      {
-        context: "/api",
-        target: "http://httpbin.org/",
-        changeOrigin: true,
-      },
-    ],
+    open: true,
+    historyApiFallback: true,
   },
   resolve: {
-    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     alias: {
       "@": path.resolve(__dirname, "../src"), // 将 `@/` 映射到 `src` 目录
     },

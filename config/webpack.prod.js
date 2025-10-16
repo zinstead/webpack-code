@@ -97,7 +97,6 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../public/index.html"),
-      favicon: path.resolve(__dirname, "../public/nothing.svg"),
     }),
     new MiniCssExtractPlugin({
       filename: "static/css/[name].css",
@@ -105,7 +104,7 @@ module.exports = {
     }),
   ],
   resolve: {
-    extensions: [".js", ".jsx", ".json", ".ts", ".tsx"],
+    extensions: [".js", ".jsx", ".ts", ".tsx", ".json"],
     alias: {
       "@": path.resolve(__dirname, "../src"), // 将 `@/` 映射到 `src` 目录
     },
