@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "./src/index.js",
   "scripts": {
-    "start": "yarn dev",
+    "preinstall": "only-allow pnpm",
     "dev": "webpack serve --config ./config/webpack.dev.js",
     "build": "webpack --config ./config/webpack.prod.js",
     "postinstall": "husky"
@@ -30,6 +30,7 @@
     "less": "^4.2.0",
     "less-loader": "^12.2.0",
     "mini-css-extract-plugin": "^2.9.2",
+    "only-allow": "^1.2.1",
     "postcss": "^8.4.49",
     "postcss-loader": "^8.1.1",
     "postcss-preset-env": "^10.1.1",
@@ -43,7 +44,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.26.0",
-    "bin-wrapper-china": "^0.1.0",
     "core-js": "^3.39.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
@@ -53,11 +53,6 @@
     "> 1%",
     "not dead"
   ],
-  "resolutions": {
-    "bin-wrapper": "npm:bin-wrapper-china",
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
-  },
   "engines": {
     "node": "18.x"
   }

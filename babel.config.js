@@ -11,6 +11,7 @@ module.exports = {
     [
       "@babel/preset-react",
       {
+        // react17以后不需要显式导入react就能使用jsx
         runtime: "automatic",
       },
     ],
